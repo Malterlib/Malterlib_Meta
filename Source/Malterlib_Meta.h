@@ -50,13 +50,13 @@ namespace NMib
 			template <bool t_bToCheck, bool... tp_CToCheck>
 			struct TCAllIsTrueImp<t_bToCheck, tp_CToCheck...>
 			{
-				static const bool mc_Value = t_bToCheck && TCAllIsTrueImp<tp_CToCheck...>::mc_Value;
+				static constexpr bool mc_Value = t_bToCheck && TCAllIsTrueImp<tp_CToCheck...>::mc_Value;
 			};
 			
 			template <>
 			struct TCAllIsTrueImp<>
 			{
-				static const bool mc_Value = true;
+				static constexpr bool mc_Value = true;
 			};
 		}
 
