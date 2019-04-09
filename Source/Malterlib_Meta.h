@@ -39,6 +39,39 @@ namespace NMib::NMeta
 	};
 
 	/////////////
+	// Integer sequence
+
+	template <typename t_CInteger, t_CInteger ...t_Integer>
+	struct TCIntegerSequence
+	{
+		static constexpr mint mc_Size = sizeof...(t_Integer);
+	};
+
+	template <mint t_Index, typename t_CIntegerSequence>
+	class TCIntegerSequence_Get;
+
+	template <mint t_Index, typename t_CInteger>
+	class TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger>>
+	{
+	public:
+		static_assert(t_Index == 0 && t_Index != 0, "TCIntegerSequence_Get index out of range");
+	};
+
+	template <typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
+	class TCIntegerSequence_Get<0, NMeta::TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
+	{
+	public:
+		static constexpr t_CInteger mc_Value = t_Head;
+	};
+
+	template <mint t_Index, typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
+	class TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
+	{
+	public:
+		static constexpr t_CInteger mc_Value = TCIntegerSequence_Get<t_Index-1, TCIntegerSequence<t_CInteger, t_Integer...>>::mc_Value;
+	};
+
+	/////////////
 	// All is true
 
 	namespace NPrivate
