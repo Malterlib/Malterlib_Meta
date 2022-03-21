@@ -55,10 +55,13 @@ namespace NMib::NMeta
 	}
 
 	template <typename t_CSourceList, mint t_End = TCTypeList_Len<typename NTraits::TCRemoveReference<t_CSourceList>::CType>::mc_Value, mint t_Start = 0>
+		requires
+		(
+			t_Start <= t_End // t_Start needs to be less than end
+			&& t_End <= TCTypeList_Len<typename NTraits::TCRemoveReference<t_CSourceList>::CType>::mc_Value // t_End is larger than size of list
+		)
 	struct TCTypeList_MakePromotedLValueRef
 	{
-		static_assert(t_Start <= t_End, "t_Start needs to be less than end");
-		static_assert(t_End <= TCTypeList_Len<typename NTraits::TCRemoveReference<t_CSourceList>::CType>::mc_Value, "t_End is larger than size of list");
 		typedef typename NPrivate::TCTypeListp_CromoteLValueRefImp<TCTypeList<>, t_CSourceList, t_Start, t_End>::CType CType;
 	};
 

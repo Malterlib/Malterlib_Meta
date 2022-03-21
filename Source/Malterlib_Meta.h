@@ -32,9 +32,9 @@ namespace NMib::NMeta
 	}
 
 	template <mint t_EndIndex, mint t_StartIndex = 0>
+		requires (t_StartIndex <= t_EndIndex) // Start index cannot be larger than the end index
 	struct TCMakeConsecutiveIndices
 	{
-		static_assert(t_StartIndex <= t_EndIndex, "Start index cannot be larger than the end index");
 		typedef typename NPrivate::TCMakeConsecutiveIndicesImp<t_StartIndex, TCIndices<>, t_EndIndex>::CType CType;
 	};
 
@@ -48,26 +48,23 @@ namespace NMib::NMeta
 	};
 
 	template <mint t_Index, typename t_CIntegerSequence>
-	class TCIntegerSequence_Get;
+	struct TCIntegerSequence_Get;
 
 	template <mint t_Index, typename t_CInteger>
-	class TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger>>
+	struct TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger>>
 	{
-	public:
 		static_assert(t_Index == 0 && t_Index != 0, "TCIntegerSequence_Get index out of range");
 	};
 
 	template <typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
-	class TCIntegerSequence_Get<0, NMeta::TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
+	struct TCIntegerSequence_Get<0, NMeta::TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
 	{
-	public:
 		static constexpr t_CInteger mc_Value = t_Head;
 	};
 
 	template <mint t_Index, typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
-	class TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
+	struct TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
 	{
-	public:
 		static constexpr t_CInteger mc_Value = TCIntegerSequence_Get<t_Index-1, TCIntegerSequence<t_CInteger, t_Integer...>>::mc_Value;
 	};
 
@@ -92,7 +89,7 @@ namespace NMib::NMeta
 	}
 
 	template <bool... tp_CToCheck>
-	class TCAllIsTrue
+	struct TCAllIsTrue
 		: public NTraits::TCCompileTimeConstant<bool, NPrivate::TCAllIsTrueImp<tp_CToCheck...>::mc_Value>
 	{
 	};
@@ -122,27 +119,27 @@ namespace NMib::NMeta
 	// Type list len
 
 	template <typename t_CType>
-	class TCTypeList_Len;
+	struct TCTypeList_Len;
 
 	// Support any qualifiers
 	template <typename t_CType>
-	class TCTypeList_Len<t_CType const>
+	struct TCTypeList_Len<t_CType const>
 		: public TCTypeList_Len<t_CType>
 	{
 	};
 	template <typename t_CType>
-	class TCTypeList_Len<t_CType volatile>
+	struct TCTypeList_Len<t_CType volatile>
 		: public TCTypeList_Len<t_CType>
 	{
 	};
 	template <typename t_CType>
-	class TCTypeList_Len<t_CType const volatile>
+	struct TCTypeList_Len<t_CType const volatile>
 		: public TCTypeList_Len<t_CType>
 	{
 	};
 
 	template <typename... tp_CCTypes>
-	class TCTypeList_Len<TCTypeList<tp_CCTypes...>>
+	struct TCTypeList_Len<TCTypeList<tp_CCTypes...>>
 		: public NTraits::TCCompileTimeConstant<mint, sizeof...(tp_CCTypes)>
 	{
 	};
@@ -151,92 +148,79 @@ namespace NMib::NMeta
 	// Type list get
 
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_Get;
+	struct TCTypeList_Get;
 
 	// Copy qualifiers of type list
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_Get<t_Index, t_CType const>
+	struct TCTypeList_Get<t_Index, t_CType const>
 	{
-	public:
 		typedef typename NTraits::TCAddConst<typename TCTypeList_Get<t_Index, t_CType>::CType>::CType CType;
 	};
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_Get<t_Index, t_CType volatile>
+	struct TCTypeList_Get<t_Index, t_CType volatile>
 	{
-	public:
 		typedef typename NTraits::TCAddVolatile<typename TCTypeList_Get<t_Index, t_CType>::CType>::CType CType;
 	};
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_Get<t_Index, t_CType const volatile>
+	struct TCTypeList_Get<t_Index, t_CType const volatile>
 	{
-	public:
 		typedef typename NTraits::TCAddConstVolatile<typename TCTypeList_Get<t_Index, t_CType>::CType>::CType CType;
 	};
 
 	template <mint t_Index>
-	class TCTypeList_Get<t_Index, TCTypeList<> >
+	struct TCTypeList_Get<t_Index, TCTypeList<> >
 	{
-	public:
 		static_assert(t_Index == 0 && t_Index != 0, "TCTypeList_Get index out of range");
 	};
 
 	template <typename t_CHeadType, typename... tp_CCTypes>
-	class TCTypeList_Get<0, NMeta::TCTypeList<t_CHeadType, tp_CCTypes...>>
+	struct TCTypeList_Get<0, NMeta::TCTypeList<t_CHeadType, tp_CCTypes...>>
 	{
-	public:
 		typedef t_CHeadType CType;
 	};
 
 	template <mint t_Index, typename t_CHeadType, typename... tp_CCTypes>
-	class TCTypeList_Get<t_Index, TCTypeList<t_CHeadType, tp_CCTypes...>>
+	struct TCTypeList_Get<t_Index, TCTypeList<t_CHeadType, tp_CCTypes...>>
 	{
-	public:
 		typedef typename TCTypeList_Get<t_Index-1, TCTypeList<tp_CCTypes...>>::CType CType;
 	};
 
 
-
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_GetOrVoid;
+	struct TCTypeList_GetOrVoid;
 
 	// Copy qualifiers of type list
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_GetOrVoid<t_Index, t_CType const>
+	struct TCTypeList_GetOrVoid<t_Index, t_CType const>
 	{
-	public:
 		typedef typename NTraits::TCAddConst<typename TCTypeList_GetOrVoid<t_Index, t_CType>::CType>::CType CType;
 	};
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_GetOrVoid<t_Index, t_CType volatile>
+	struct TCTypeList_GetOrVoid<t_Index, t_CType volatile>
 	{
-	public:
 		typedef typename NTraits::TCAddVolatile<typename TCTypeList_GetOrVoid<t_Index, t_CType>::CType>::CType CType;
 	};
 	template <mint t_Index, typename t_CType>
-	class TCTypeList_GetOrVoid<t_Index, t_CType const volatile>
+	struct TCTypeList_GetOrVoid<t_Index, t_CType const volatile>
 	{
-	public:
 		typedef typename NTraits::TCAddConstVolatile<typename TCTypeList_GetOrVoid<t_Index, t_CType>::CType>::CType CType;
 	};
 
 	template <mint t_Index>
-	class TCTypeList_GetOrVoid<t_Index, TCTypeList<> >
+	struct TCTypeList_GetOrVoid<t_Index, TCTypeList<> >
 	{
-	public:
 		typedef void CType;
 	};
 
 	template <typename t_CHeadType, typename... tp_CCTypes>
-	class TCTypeList_GetOrVoid<0, NMeta::TCTypeList<t_CHeadType, tp_CCTypes...>>
+	struct TCTypeList_GetOrVoid<0, NMeta::TCTypeList<t_CHeadType, tp_CCTypes...>>
 	{
-	public:
 		typedef t_CHeadType CType;
 	};
 
 	template <mint t_Index, typename t_CHeadType, typename... tp_CCTypes>
-	class TCTypeList_GetOrVoid<t_Index, TCTypeList<t_CHeadType, tp_CCTypes...>>
+	struct TCTypeList_GetOrVoid<t_Index, TCTypeList<t_CHeadType, tp_CCTypes...>>
 	{
-	public:
 		typedef typename TCTypeList_GetOrVoid<t_Index-1, TCTypeList<tp_CCTypes...>>::CType CType;
 	};
 }
