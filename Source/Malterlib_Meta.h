@@ -223,6 +223,55 @@ namespace NMib::NMeta
 	{
 		typedef typename TCTypeList_GetOrVoid<t_Index-1, TCTypeList<tp_CCTypes...>>::CType CType;
 	};
+
+	namespace NPrivate
+	{
+		template <typename t_CInput>
+		struct TCTemplateClassBase;
+
+		template <template <typename ...> class t_TCTemplate, typename ...tp_CArgs>
+		struct TCTemplateClassBase<t_TCTemplate<tp_CArgs...>>
+		{
+			using CType = t_TCTemplate<>;
+		};
+	}
+
+	template
+	<
+		typename t_CInput
+		, typename = typename NPrivate::TCTemplateClassBase<t_CInput>::CType
+	>
+	struct TCReverseTemplateArguments;
+
+	template
+	<
+		template <typename...> class t_TCTemplate
+		, typename ...tp_CArgs
+	>
+	struct TCReverseTemplateArguments
+	<
+		typename NPrivate::TCTemplateClassBase<t_TCTemplate<tp_CArgs...>>::CType
+		, t_TCTemplate<tp_CArgs...>
+	>
+	{
+		using CType = t_TCTemplate<tp_CArgs...>;
+	};
+
+	template
+	<
+		template <typename...> class t_TCTemplate
+		, typename t_CFirst
+		, typename ...tp_CRest
+		, typename ...tp_CDone
+	>
+	struct TCReverseTemplateArguments
+	<
+		t_TCTemplate<t_CFirst, tp_CRest...>
+		, t_TCTemplate<tp_CDone...>
+	>
+	{
+		using CType = typename TCReverseTemplateArguments<t_TCTemplate<tp_CRest...>, t_TCTemplate<t_CFirst, tp_CDone...>>::CType;
+	};
 }
 
 namespace NMib
