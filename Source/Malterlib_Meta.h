@@ -33,10 +33,7 @@ namespace NMib::NMeta
 
 	template <mint t_EndIndex, mint t_StartIndex = 0>
 		requires (t_StartIndex <= t_EndIndex) // Start index cannot be larger than the end index
-	struct TCMakeConsecutiveIndices
-	{
-		typedef typename NPrivate::TCMakeConsecutiveIndicesImp<t_StartIndex, TCIndices<>, t_EndIndex>::CType CType;
-	};
+	using TCConsecutiveIndices = typename NPrivate::TCMakeConsecutiveIndicesImp<t_StartIndex, TCIndices<>, t_EndIndex>::CType;
 
 	/////////////
 	// Integer sequence
