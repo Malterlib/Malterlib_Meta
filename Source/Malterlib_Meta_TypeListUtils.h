@@ -11,10 +11,10 @@ namespace NMib::NMeta
 
 	namespace NPrivate
 	{
-		template <typename t_CTypes, typename t_CSourceList, mint t_Current, mint t_End>
+		template <typename t_CTypes, typename t_CSourceList, umint t_Current, umint t_End>
 		struct TCTypeListp_CromoteLValueRefImp;
 
-		template <typename... tp_CCTypes, typename t_CSourceList, mint t_Current, mint t_End>
+		template <typename... tp_CCTypes, typename t_CSourceList, umint t_Current, umint t_End>
 		struct TCTypeListp_CromoteLValueRefImp<TCTypeList<tp_CCTypes...>, t_CSourceList, t_Current, t_End>
 		{
 			using CSourceListNoRef = NTraits::TCRemoveReference<t_CSourceList>;
@@ -47,26 +47,26 @@ namespace NMib::NMeta
 			;
 		};
 
-		template <typename... tp_CCTypes, typename t_CSourceList, mint t_End>
+		template <typename... tp_CCTypes, typename t_CSourceList, umint t_End>
 		struct TCTypeListp_CromoteLValueRefImp<TCTypeList<tp_CCTypes...>, t_CSourceList, t_End, t_End>
 		{
 			using CType = TCTypeList<tp_CCTypes...>;
 		};
 
-		template <typename t_CSourceList, mint t_End = gc_TypeList_Len<NTraits::TCRemoveReference<t_CSourceList>>, mint t_Start = 0>
+		template <typename t_CSourceList, umint t_End = gc_TypeList_Len<NTraits::TCRemoveReference<t_CSourceList>>, umint t_Start = 0>
 		struct TCTypeList_MakePromotedLValueRef
 		{
 			using CType = typename NPrivate::TCTypeListp_CromoteLValueRefImp<TCTypeList<>, t_CSourceList, t_Start, t_End>::CType;
 		};
 	}
 
-	template <typename t_CSourceList, mint t_End = gc_TypeList_Len<NTraits::TCRemoveReference<t_CSourceList>>, mint t_Start = 0>
+	template <typename t_CSourceList, umint t_End = gc_TypeList_Len<NTraits::TCRemoveReference<t_CSourceList>>, umint t_Start = 0>
 		requires
 		(
 			t_Start <= t_End // t_Start needs to be less than end
 			&& t_End <= gc_TypeList_Len<NTraits::TCRemoveReference<t_CSourceList>> // t_End is larger than size of list
 		)
-	using TCTypeList_MakePromotedLValueRef = typename NPrivate::TCTypeList_MakePromotedLValueRef<t_CSourceList, mint t_End, t_Start>::CType;
+	using TCTypeList_MakePromotedLValueRef = typename NPrivate::TCTypeList_MakePromotedLValueRef<t_CSourceList, umint t_End, t_Start>::CType;
 
 	/////////////
 	// Type list is convertible

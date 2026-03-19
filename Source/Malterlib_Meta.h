@@ -8,30 +8,30 @@ namespace NMib::NMeta
 	/////////////
 	// Indices
 
-	template <mint...>
+	template <umint...>
 	struct TCIndices
 	{
 	};
 
 	namespace NPrivate
 	{
-		template <mint t_CurrentIndex, typename t_CIndices, mint t_EndIndex>
+		template <umint t_CurrentIndex, typename t_CIndices, umint t_EndIndex>
 		struct TCMakeConsecutiveIndicesImp;
 
-		template <mint t_CurrentIndex, mint... _Indices, mint t_EndIndex>
+		template <umint t_CurrentIndex, umint... _Indices, umint t_EndIndex>
 		struct TCMakeConsecutiveIndicesImp<t_CurrentIndex, TCIndices<_Indices...>, t_EndIndex>
 		{
 			using CType = typename TCMakeConsecutiveIndicesImp<t_CurrentIndex+1, TCIndices<_Indices..., t_CurrentIndex>, t_EndIndex>::CType;
 		};
 
-		template <mint t_EndIndex, mint... _Indices>
+		template <umint t_EndIndex, umint... _Indices>
 		struct TCMakeConsecutiveIndicesImp<t_EndIndex, TCIndices<_Indices...>, t_EndIndex>
 		{
 			using CType = TCIndices<_Indices...>;
 		};
 	}
 
-	template <mint t_EndIndex, mint t_StartIndex = 0>
+	template <umint t_EndIndex, umint t_StartIndex = 0>
 		requires (t_StartIndex <= t_EndIndex) // Start index cannot be larger than the end index
 	using TCConsecutiveIndices = typename NPrivate::TCMakeConsecutiveIndicesImp<t_StartIndex, TCIndices<>, t_EndIndex>::CType;
 
@@ -41,15 +41,15 @@ namespace NMib::NMeta
 	template <typename t_CInteger, t_CInteger ...t_Integer>
 	struct TCIntegerSequence
 	{
-		static constexpr mint mc_Size = sizeof...(t_Integer);
+		static constexpr umint mc_Size = sizeof...(t_Integer);
 	};
 
 	namespace NPrivate
 	{
-		template <mint t_Index, typename t_CIntegerSequence>
+		template <umint t_Index, typename t_CIntegerSequence>
 		struct TCIntegerSequence_Get;
 
-		template <mint t_Index, typename t_CInteger>
+		template <umint t_Index, typename t_CInteger>
 		struct TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger>>
 		{
 			static_assert(t_Index == 0 && t_Index != 0, "TCIntegerSequence_Get index out of range");
@@ -61,15 +61,15 @@ namespace NMib::NMeta
 			static constexpr t_CInteger mc_Value = t_Head;
 		};
 
-		template <mint t_Index, typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
+		template <umint t_Index, typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
 		struct TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
 		{
 			static constexpr t_CInteger mc_Value = TCIntegerSequence_Get<t_Index-1, TCIntegerSequence<t_CInteger, t_Integer...>>::mc_Value;
 		};
 	}
 
-	template <mint t_Index, typename t_CIntegerSequence>
-	inline constexpr mint gc_IntegerSequence_Get = NPrivate::TCIntegerSequence_Get<t_Index, t_CIntegerSequence>::mc_Value;
+	template <umint t_Index, typename t_CIntegerSequence>
+	inline constexpr umint gc_IntegerSequence_Get = NPrivate::TCIntegerSequence_Get<t_Index, t_CIntegerSequence>::mc_Value;
 
 	/////////////
 	// All is true
@@ -148,39 +148,39 @@ namespace NMib::NMeta
 		template <typename... tp_CCTypes>
 		struct TCTypeList_Len<TCTypeList<tp_CCTypes...>>
 		{
-			constexpr static mint mc_Value = sizeof...(tp_CCTypes);
+			constexpr static umint mc_Value = sizeof...(tp_CCTypes);
 		};
 	}
 
 	template <typename t_CType>
-	inline constexpr mint gc_TypeList_Len = NPrivate::TCTypeList_Len<t_CType>::mc_Value;
+	inline constexpr umint gc_TypeList_Len = NPrivate::TCTypeList_Len<t_CType>::mc_Value;
 
 	/////////////
 	// Type list get
 
 	namespace NPrivate
 	{
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_Get;
 
 		// Copy qualifiers of type list
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_Get<t_Index, t_CType const>
 		{
 			using CType = NTraits::TCAddConst<typename TCTypeList_Get<t_Index, t_CType>::CType>;
 		};
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_Get<t_Index, t_CType volatile>
 		{
 			using CType = NTraits::TCAddVolatile<typename TCTypeList_Get<t_Index, t_CType>::CType>;
 		};
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_Get<t_Index, t_CType const volatile>
 		{
 			using CType = NTraits::TCAddConstVolatile<typename TCTypeList_Get<t_Index, t_CType>::CType>;
 		};
 
-		template <mint t_Index>
+		template <umint t_Index>
 		struct TCTypeList_Get<t_Index, TCTypeList<> >
 		{
 			static_assert(t_Index == 0 && t_Index != 0, "TCTypeList_Get index out of range");
@@ -192,39 +192,39 @@ namespace NMib::NMeta
 			using CType = t_CHeadType;
 		};
 
-		template <mint t_Index, typename t_CHeadType, typename... tp_CCTypes>
+		template <umint t_Index, typename t_CHeadType, typename... tp_CCTypes>
 		struct TCTypeList_Get<t_Index, TCTypeList<t_CHeadType, tp_CCTypes...>>
 		{
 			using CType = typename TCTypeList_Get<t_Index-1, TCTypeList<tp_CCTypes...>>::CType;
 		};
 	}
 
-	template <mint t_Index, typename t_CType>
+	template <umint t_Index, typename t_CType>
 	using TCTypeList_Get = typename NPrivate::TCTypeList_Get<t_Index, t_CType>::CType;
 
 	namespace NPrivate
 	{
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_GetOrVoid;
 
 		// Copy qualifiers of type list
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_GetOrVoid<t_Index, t_CType const>
 		{
 			using CType = NTraits::TCAddConst<typename TCTypeList_GetOrVoid<t_Index, t_CType>::CType>;
 		};
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_GetOrVoid<t_Index, t_CType volatile>
 		{
 			using CType = NTraits::TCAddVolatile<typename TCTypeList_GetOrVoid<t_Index, t_CType>::CType>;
 		};
-		template <mint t_Index, typename t_CType>
+		template <umint t_Index, typename t_CType>
 		struct TCTypeList_GetOrVoid<t_Index, t_CType const volatile>
 		{
 			using CType = NTraits::TCAddConstVolatile<typename TCTypeList_GetOrVoid<t_Index, t_CType>::CType>;
 		};
 
-		template <mint t_Index>
+		template <umint t_Index>
 		struct TCTypeList_GetOrVoid<t_Index, TCTypeList<> >
 		{
 			using CType = void;
@@ -236,14 +236,14 @@ namespace NMib::NMeta
 			using CType = t_CHeadType;
 		};
 
-		template <mint t_Index, typename t_CHeadType, typename... tp_CCTypes>
+		template <umint t_Index, typename t_CHeadType, typename... tp_CCTypes>
 		struct TCTypeList_GetOrVoid<t_Index, TCTypeList<t_CHeadType, tp_CCTypes...>>
 		{
 			using CType = typename TCTypeList_GetOrVoid<t_Index-1, TCTypeList<tp_CCTypes...>>::CType;
 		};
 	}
 
-	template <mint t_Index, typename t_CType>
+	template <umint t_Index, typename t_CType>
 	using TCTypeList_GetOrVoid = typename NPrivate::TCTypeList_GetOrVoid<t_Index, t_CType>::CType;
 
 	namespace NPrivate
