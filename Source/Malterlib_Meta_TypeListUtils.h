@@ -14,12 +14,11 @@ namespace NMib::NMeta
 		template <typename t_CTypes, typename t_CSourceList, umint t_Current, umint t_End>
 		struct TCTypeListp_CromoteLValueRefImp;
 
-		template <typename... tp_CCTypes, typename t_CSourceList, umint t_Current, umint t_End>
+		template <typename ...tp_CCTypes, typename t_CSourceList, umint t_Current, umint t_End>
 		struct TCTypeListp_CromoteLValueRefImp<TCTypeList<tp_CCTypes...>, t_CSourceList, t_Current, t_End>
 		{
 			using CSourceListNoRef = NTraits::TCRemoveReference<t_CSourceList>;
-			using CType = typename
-				TCTypeListp_CromoteLValueRefImp
+			using CType = typename TCTypeListp_CromoteLValueRefImp
 				<
 					TCTypeList
 					<
@@ -41,13 +40,14 @@ namespace NMib::NMeta
 						>
 					>
 					, t_CSourceList
-					, t_Current+1
+					, t_Current + 1
 					, t_End
-				>::CType
+				>
+				::CType
 			;
 		};
 
-		template <typename... tp_CCTypes, typename t_CSourceList, umint t_End>
+		template <typename ...tp_CCTypes, typename t_CSourceList, umint t_End>
 		struct TCTypeListp_CromoteLValueRefImp<TCTypeList<tp_CCTypes...>, t_CSourceList, t_End, t_End>
 		{
 			using CType = TCTypeList<tp_CCTypes...>;
@@ -71,27 +71,26 @@ namespace NMib::NMeta
 	/////////////
 	// Type list is convertible
 
-
 	namespace NPrivate
 	{
 		template <bool t_bSameLength, typename t_CFromList, typename t_CToList>
 		struct TCTypeList_IsConvertibleImp
 		{
-			constexpr static bool mc_bValue = false;
+			static constexpr bool mc_bValue = false;
 		};
 
-		template <typename t_CFromHead, typename... tp_CFromTypes, typename t_CToHead, typename... tp_CToTypes>
+		template <typename t_CFromHead, typename ...tp_CFromTypes, typename t_CToHead, typename ...tp_CToTypes>
 		struct TCTypeList_IsConvertibleImp<true, TCTypeList<t_CFromHead, tp_CFromTypes...>, TCTypeList<t_CToHead, tp_CToTypes...>>
 		{
-			constexpr static bool mc_bValue = NTraits::cIsConvertible<t_CFromHead, t_CToHead>
-				&& TCTypeList_IsConvertibleImp<true, TCTypeList<tp_CFromTypes...>, TCTypeList<tp_CToTypes...>>::mc_bValue
+			static constexpr bool mc_bValue
+				= NTraits::cIsConvertible<t_CFromHead, t_CToHead> && TCTypeList_IsConvertibleImp<true, TCTypeList<tp_CFromTypes...>, TCTypeList<tp_CToTypes...>>::mc_bValue
 			;
 		};
 
 		template <>
 		struct TCTypeList_IsConvertibleImp<true, TCTypeList<>, TCTypeList<>>
 		{
-			constexpr static bool mc_bValue = true;
+			static constexpr bool mc_bValue = true;
 		};
 
 		template <typename t_CFromList, typename t_CToList>
@@ -118,23 +117,22 @@ namespace NMib::NMeta
 		template <bool t_bSameLength, typename t_CFromList, typename t_CToList>
 		struct TCTypeList_IsConstructibleImp
 		{
-			constexpr static bool mc_bValue = false;
+			static constexpr bool mc_bValue = false;
 		};
 
-		template <typename t_CFromHead, typename... tp_CFromTypes, typename t_CToHead, typename... tp_CToTypes>
+		template <typename t_CFromHead, typename ...tp_CFromTypes, typename t_CToHead, typename ...tp_CToTypes>
 		struct TCTypeList_IsConstructibleImp<true, TCTypeList<t_CFromHead, tp_CFromTypes...>, TCTypeList<t_CToHead, tp_CToTypes...>>
 		{
-			constexpr static bool mc_bValue = NTraits::cIsConstructibleWith<t_CToHead, t_CFromHead>
-				&& TCTypeList_IsConstructibleImp<true, TCTypeList<tp_CFromTypes...>, TCTypeList<tp_CToTypes...> >::mc_bValue
+			static constexpr bool mc_bValue
+				= NTraits::cIsConstructibleWith<t_CToHead, t_CFromHead> && TCTypeList_IsConstructibleImp<true, TCTypeList<tp_CFromTypes...>, TCTypeList<tp_CToTypes...>>::mc_bValue
 			;
 		};
 
 		template <>
 		struct TCTypeList_IsConstructibleImp<true, TCTypeList<>, TCTypeList<>>
 		{
-			constexpr static bool mc_bValue = true;
+			static constexpr bool mc_bValue = true;
 		};
-
 	}
 
 	template <typename t_CFromList, typename t_CToList>
@@ -157,21 +155,21 @@ namespace NMib::NMeta
 		template <bool t_bSameLength, typename t_CFromList, typename t_CToList>
 		struct TCTypeList_IsAssignableImp
 		{
-			constexpr static bool mc_bValue = false;
+			static constexpr bool mc_bValue = false;
 		};
 
-		template <typename t_CFromHead, typename... tp_CFromTypes, typename t_CToHead, typename... tp_CToTypes>
+		template <typename t_CFromHead, typename ...tp_CFromTypes, typename t_CToHead, typename ...tp_CToTypes>
 		struct TCTypeList_IsAssignableImp<true, TCTypeList<t_CFromHead, tp_CFromTypes...>, TCTypeList<t_CToHead, tp_CToTypes...>>
 		{
-			constexpr static bool mc_bValue = NTraits::cIsAssignableWith<t_CToHead, t_CFromHead>
-				&& TCTypeList_IsAssignableImp<true, TCTypeList<tp_CFromTypes...>, TCTypeList<tp_CToTypes...> >::mc_bValue
+			static constexpr bool mc_bValue
+				= NTraits::cIsAssignableWith<t_CToHead, t_CFromHead> && TCTypeList_IsAssignableImp<true, TCTypeList<tp_CFromTypes...>, TCTypeList<tp_CToTypes...>>::mc_bValue
 			;
 		};
 
 		template <>
 		struct TCTypeList_IsAssignableImp<true, TCTypeList<>, TCTypeList<>>
 		{
-			constexpr static bool mc_bValue = true;
+			static constexpr bool mc_bValue = true;
 		};
 	}
 
