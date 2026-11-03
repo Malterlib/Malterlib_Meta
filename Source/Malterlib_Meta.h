@@ -76,12 +76,12 @@ namespace NMib::NMeta
 
 	namespace NPrivate
 	{
-		template <bool ...tp_CToCheck> struct TCAllIsTrueImp;
+		template <bool ...tp_bToCheck> struct TCAllIsTrueImp;
 
-		template <bool t_bToCheck, bool ...tp_CToCheck>
-		struct TCAllIsTrueImp<t_bToCheck, tp_CToCheck...>
+		template <bool t_bToCheck, bool ...tp_bToCheck>
+		struct TCAllIsTrueImp<t_bToCheck, tp_bToCheck...>
 		{
-			static constexpr bool mc_Value = t_bToCheck && TCAllIsTrueImp<tp_CToCheck...>::mc_Value;
+			static constexpr bool mc_Value = t_bToCheck && TCAllIsTrueImp<tp_bToCheck...>::mc_Value;
 		};
 
 		template <>
@@ -91,8 +91,8 @@ namespace NMib::NMeta
 		};
 	}
 
-	template <bool ...tp_CToCheck>
-	concept cAllIsTrue = (tp_CToCheck && ...);
+	template <bool ...tp_bToCheck>
+	concept cAllIsTrue = (tp_bToCheck && ...);
 
 	/////////////
 	// Type list
