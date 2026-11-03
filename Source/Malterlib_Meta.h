@@ -286,11 +286,11 @@ namespace NMib::NMeta
 namespace NMib
 {
 	template <typename ...tfp_CTypes>
-	void fg_Swallow(tfp_CTypes && ...p_Values) noexcept
-	{
-	}
+	void fg_Swallow(tfp_CTypes && ...p_Values) noexcept;
 }
 
 #ifndef DMibPNoShortCuts
 using namespace NMib::NMeta;
 #endif
+
+#include "Malterlib_Meta.hpp"
