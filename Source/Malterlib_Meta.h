@@ -18,16 +18,16 @@ namespace NMib::NMeta
 		template <umint t_CurrentIndex, typename t_CIndices, umint t_EndIndex>
 		struct TCMakeConsecutiveIndicesImp;
 
-		template <umint t_CurrentIndex, umint ..._Indices, umint t_EndIndex>
-		struct TCMakeConsecutiveIndicesImp<t_CurrentIndex, TCIndices<_Indices...>, t_EndIndex>
+		template <umint t_CurrentIndex, umint ...tp_Indices, umint t_EndIndex>
+		struct TCMakeConsecutiveIndicesImp<t_CurrentIndex, TCIndices<tp_Indices...>, t_EndIndex>
 		{
-			using CType = typename TCMakeConsecutiveIndicesImp<t_CurrentIndex + 1, TCIndices<_Indices..., t_CurrentIndex>, t_EndIndex>::CType;
+			using CType = typename TCMakeConsecutiveIndicesImp<t_CurrentIndex + 1, TCIndices<tp_Indices..., t_CurrentIndex>, t_EndIndex>::CType;
 		};
 
-		template <umint t_EndIndex, umint ..._Indices>
-		struct TCMakeConsecutiveIndicesImp<t_EndIndex, TCIndices<_Indices...>, t_EndIndex>
+		template <umint t_EndIndex, umint ...tp_Indices>
+		struct TCMakeConsecutiveIndicesImp<t_EndIndex, TCIndices<tp_Indices...>, t_EndIndex>
 		{
-			using CType = TCIndices<_Indices...>;
+			using CType = TCIndices<tp_Indices...>;
 		};
 	}
 
@@ -38,10 +38,10 @@ namespace NMib::NMeta
 	/////////////
 	// Integer sequence
 
-	template <typename t_CInteger, t_CInteger ...t_Integer>
+	template <typename t_CInteger, t_CInteger ...tp_Integers>
 	struct TCIntegerSequence
 	{
-		static constexpr umint mc_Size = sizeof...(t_Integer);
+		static constexpr umint mc_Size = sizeof...(tp_Integers);
 	};
 
 	namespace NPrivate
@@ -55,16 +55,16 @@ namespace NMib::NMeta
 			static_assert(t_Index == 0 && t_Index != 0, "TCIntegerSequence_Get index out of range");
 		};
 
-		template <typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
-		struct TCIntegerSequence_Get<0, NMeta::TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
+		template <typename t_CInteger, t_CInteger t_Head, t_CInteger ...tp_Integers>
+		struct TCIntegerSequence_Get<0, NMeta::TCIntegerSequence<t_CInteger, t_Head, tp_Integers...>>
 		{
 			static constexpr t_CInteger mc_Value = t_Head;
 		};
 
-		template <umint t_Index, typename t_CInteger, t_CInteger t_Head, t_CInteger ...t_Integer>
-		struct TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger, t_Head, t_Integer...>>
+		template <umint t_Index, typename t_CInteger, t_CInteger t_Head, t_CInteger ...tp_Integers>
+		struct TCIntegerSequence_Get<t_Index, TCIntegerSequence<t_CInteger, t_Head, tp_Integers...>>
 		{
-			static constexpr t_CInteger mc_Value = TCIntegerSequence_Get<t_Index - 1, TCIntegerSequence<t_CInteger, t_Integer...>>::mc_Value;
+			static constexpr t_CInteger mc_Value = TCIntegerSequence_Get<t_Index - 1, TCIntegerSequence<t_CInteger, tp_Integers...>>::mc_Value;
 		};
 	}
 
@@ -286,7 +286,7 @@ namespace NMib::NMeta
 namespace NMib
 {
 	template <typename ...tfp_CTypes>
-	void fg_Swallow(tfp_CTypes && ...) noexcept
+	void fg_Swallow(tfp_CTypes && ...p_Values) noexcept
 	{
 	}
 }
